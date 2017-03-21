@@ -1,6 +1,7 @@
 import javax.swing.JFrame;
 
 public class Main {
+	//testing.
 	public static void main(String[] args) {
 		JFrame myFrame = new JFrame("Color Grid");
 		myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
