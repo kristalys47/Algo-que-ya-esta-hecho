@@ -10,13 +10,26 @@ import javax.swing.JFrame;
 public class MyMouseAdapter extends MouseAdapter {
 	private Random generator = new Random();
 	private Color check = Color.RED;
+	private int numberOfBombs = generator.nextInt(21);
+	private Minesweeper mines = new Minesweeper();
+	private int[] minesXposition = new int[this.numberOfBombs];
+	private int[] minesYposition = new int[this.numberOfBombs];		
+	this.mines.makeBombs(minesXposition, minesYposition);
 
-	public boolean isRed(Color gridcolor) 
+	public int getNumberOfBombs() {
+		return numberOfBombs;
+	}
+
+ 	public boolean isRed(Color gridcolor) 
 	{
 		return (gridcolor.equals(this.check));
 	}
 
-	public boolean haveBomb() {
+	public boolean haveBomb(int x, int y) {
+		int i;
+		for (i=0; i<this.numberOfBombs;i++){
+		}
+
 		return (false);
 	}
 
@@ -202,4 +215,9 @@ public class MyMouseAdapter extends MouseAdapter {
 			break;
 		}
 	}
+
+	
+
+
+	
 }
