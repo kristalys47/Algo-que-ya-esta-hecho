@@ -10,39 +10,220 @@ public class MyPanel extends JPanel {
 	private static final int GRID_X = 25;
 	private static final int GRID_Y = 25;
 	private static final int INNER_CELL_SIZE = 29;
-	private static final int TOTAL_COLUMNS = 10;
-	private static final int TOTAL_ROWS = 11;   //Last row has only one cell
+	private static final int TOTAL_COLUMNS = 9;
+	private static final int TOTAL_ROWS = 9; // Last row has only one cell
 	public int x = -1;
 	public int y = -1;
 	public int mouseDownGridX = 0;
 	public int mouseDownGridY = 0;
 	public Color[][] colorArray = new Color[TOTAL_COLUMNS][TOTAL_ROWS];
-	public MyPanel() {   //This is the constructor... this code runs first to initialize
-		if (INNER_CELL_SIZE + (new Random()).nextInt(1) < 1) {	//Use of "random" to prevent unwanted Eclipse warning
+	public Color[][] letterColor = new Color[TOTAL_COLUMNS][TOTAL_ROWS];
+	private Random generator = new Random();
+	public int[][] bombs = new int[TOTAL_COLUMNS][TOTAL_ROWS];
+	private int bomb = -1;
+	public int numberOfBombs;
+	public int[][] numbersAround = new int[TOTAL_COLUMNS][TOTAL_ROWS];
+	private Graphics g;
+
+	/**
+	 * 
+	 */
+	/**
+	 * 
+	 */
+	public MyPanel() { // This is the constructor... this code runs first to
+						// initialize
+		if (INNER_CELL_SIZE + (new Random()).nextInt(1) < 1) { // Use of
+																// "random" to
+																// prevent
+																// unwanted
+																// Eclipse
+																// warning
 			throw new RuntimeException("INNER_CELL_SIZE must be positive!");
 		}
-		if (TOTAL_COLUMNS + (new Random()).nextInt(1) < 2) {	//Use of "random" to prevent unwanted Eclipse warning
+		if (TOTAL_COLUMNS + (new Random()).nextInt(1) < 2) { // Use of "random"
+																// to prevent
+																// unwanted
+																// Eclipse
+																// warning
 			throw new RuntimeException("TOTAL_COLUMNS must be at least 2!");
 		}
-		if (TOTAL_ROWS + (new Random()).nextInt(1) < 3) {	//Use of "random" to prevent unwanted Eclipse warning
+		if (TOTAL_ROWS + (new Random()).nextInt(1) < 3) { // Use of "random" to
+															// prevent unwanted
+															// Eclipse warning
 			throw new RuntimeException("TOTAL_ROWS must be at least 3!");
 		}
-		for (int x = 0; x < TOTAL_COLUMNS; x++) {   //Top row
-			colorArray[x][0] = Color.LIGHT_GRAY;
-		}
-		for (int y = 0; y < TOTAL_ROWS; y++) {   //Left column
-			colorArray[0][y] = Color.LIGHT_GRAY;
-		}
-		for (int x = 1; x < TOTAL_COLUMNS; x++) {   //The rest of the grid
-			for (int y = 1; y < TOTAL_ROWS; y++) {
+		//Arreglo Colores del grid
+		for (int x = 0; x < TOTAL_COLUMNS; x++) { // The rest of the grid
+			for (int y = 0; y < TOTAL_ROWS; y++) {
 				colorArray[x][y] = Color.WHITE;
 			}
 		}
+		//arreglo de colores de numeros
+		for (int x = 0; x < TOTAL_COLUMNS; x++) { // The rest of the grid
+			for (int y = 0; y < TOTAL_ROWS; y++) {
+				letterColor[x][y] = Color.WHITE;
+			}
+		}
+		// Crear panel de juego
+		// crear las bombas
+		this.numberOfBombs = this.generator.nextInt(21);
+		//PRUEBAS DE BOMBAS
+		/*bombs[1][1] = this.bomb;
+		bombs[1][7] = this.bomb;
+		bombs[7][1] = this.bomb;
+		bombs[7][7] = this.bomb;
+		bombs[5][5] = this.bomb;
+		bombs[4][4] = this.bomb;
+*/
+		// espacios com bombas tienen -1
+
+		for (int a = 0; a < numberOfBombs; a++) {
+			int x = this.generator.nextInt(TOTAL_COLUMNS);
+			int y = this.generator.nextInt(TOTAL_ROWS);
+			bombs[x][y] = this.bomb;
+		
+			//letterColor[x][y] = Color.BLACK;
+			// CHANGE COLOR HERE!!!!!!!! ERASE
+		}
+
+		// inicializar los espacios basios sin bombas a 0
+		for (int j = 0; j < TOTAL_ROWS; j++) {
+			for (int i = 0; i < TOTAL_COLUMNS; i++)
+				if (!(this.bombs[i][j] == this.bomb)) {
+					this.bombs[i][j] = 0;
+				}
+		}
+		// inicializar el arreglo de conteo de numeros a 0
+		for (int j = 0; j < TOTAL_ROWS; j++) {
+			for (int i = 0; i < TOTAL_COLUMNS; i++) {
+				if (!(this.bombs[i][j] == this.bomb)) {
+					this.numbersAround[i][j] = 0;
+					
+				}
+			}
+		}
+		// asignar los numeros correspondientes
+		for (int j = 0; j < TOTAL_ROWS; j++) {
+			for (int i = 0; i < TOTAL_COLUMNS; i++) {
+				if (!(this.bombs[i][j] == this.bomb)) {
+					int b;
+					int a;
+					if (j == 0) {// Excepciones del primer row
+						switch (i) {
+						case 0: {// izquierda arriba
+							for (b = j; b < j + 2; b++) {
+								for (a = 0; a < i + 2; a++) {
+									if (this.bombs[a][b] == this.bomb)
+										this.numbersAround[i][j]++;
+								}
+							}
+							break;
+						}
+						case TOTAL_COLUMNS - 1: {// derecha arriba
+							for (b = j; b < j + 2; b++) {
+								for (a = TOTAL_COLUMNS - 2; a < TOTAL_COLUMNS - 1; a++) {
+									if (this.bombs[a][b] == this.bomb)
+										this.numbersAround[i][j]++;
+								}
+							}
+							break;
+						}
+						default: {// derecha a izquierda arriba
+							{
+								for (b = j; b < (j + 2); b++) {
+									for (a = i - 1; a < (i + 2); a++) {
+										if (this.bombs[a][b] == this.bomb)
+											this.numbersAround[i][j]++;
+									}
+								}
+							}
+
+							break;
+						}
+						}
+					} else if (j == TOTAL_ROWS - 1) {// Excepciones del ultimo
+														// row
+						switch (i) {
+						case 0: {// izquierda abajo
+							for (b = j - 1; b < j + 1; b++) {
+								for (a = 0; a < i + 2; a++) {
+									if (this.bombs[a][b] == this.bomb)
+										this.numbersAround[i][j]++;
+								}
+							}
+							break;
+						}
+						case TOTAL_COLUMNS - 1: {// derecha abajo
+							for (b = j - 1; b < j + 1; b++) {
+								for (a = TOTAL_COLUMNS - 2; a < TOTAL_COLUMNS; a++) {
+									if (this.bombs[a][b] == this.bomb)
+										this.numbersAround[i][j]++;
+								}
+							}
+							break;
+						}
+						default: {// derecha a izquierda abajo
+							{
+								for (b = j - 1; b < (j + 1); b++) {
+									for (a = i - 1; a < (i + 2); a++) {
+										if (this.bombs[a][b] == this.bomb)
+											this.numbersAround[i][j]++;
+									}
+								}
+							}
+
+							break;
+						}
+						}
+
+					} else if (i == 0 && j != 0 && j != TOTAL_ROWS - 1) {// arriba
+																			// hacia
+																			// abajo
+																			// izquierda
+						for (b = j - 1; b < j + 2; b++) {
+							for (a = i; a < i + 2; a++) {
+								if (this.bombs[a][b] == this.bomb)
+									this.numbersAround[i][j]++;
+							}
+						}
+
+					} else if (i == TOTAL_COLUMNS - 1 && j != 0 && j != TOTAL_ROWS - 1) {// arriba
+																							// hacia
+																							// abajo
+																							// derecha
+						for (b = j - 1; b < j + 2; b++) {
+							for (a = i - 1; a < i + 1; a++) {
+								if (this.bombs[a][b] == this.bomb)
+									this.numbersAround[i][j]++;
+							}
+						}
+					} else if (i > 0 && j > 0 && i < TOTAL_COLUMNS - 1 && j < TOTAL_ROWS - 1) {
+
+						for (b = j - 1; b < (j + 2); b++) {
+							for (a = i - 1; a < (i + 2); a++) {
+								if (this.bombs[a][b] == this.bomb)
+									this.numbersAround[i][j]++;
+							}
+						}
+
+					}
+				} /*
+					 * else{ this.numbersAround[i][j]=this.bomb; }
+					 */
+			}
+		}
+
 	}
+
+	boolean haveBomb(int x, int y) {
+		return (this.bombs[x][y] == this.bomb);
+	}
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
-		//Compute interior coordinates
+		this.g = g;
+		// Compute interior coordinates
 		Insets myInsets = getInsets();
 		int x1 = myInsets.left;
 		int y1 = myInsets.top;
@@ -51,82 +232,100 @@ public class MyPanel extends JPanel {
 		int width = x2 - x1;
 		int height = y2 - y1;
 
-		//Paint the background
+		// Paint the background
 		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(x1, y1, width + 1, height + 1);
 
-		//Draw the grid minus the bottom row (which has only one cell)
-		//By default, the grid will be 10x10 (see above: TOTAL_COLUMNS and TOTAL_ROWS) 
+		// Draw the grid minus the bottom row (which has only one cell)
+		// By default, the grid will be 10x10 (see above: TOTAL_COLUMNS and
+		// TOTAL_ROWS)
 		g.setColor(Color.BLACK);
-		for (int y = 0; y <= TOTAL_ROWS - 1; y++) {
-			g.drawLine(x1 + GRID_X, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)), x1 + GRID_X + ((INNER_CELL_SIZE + 1) * TOTAL_COLUMNS), y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)));
+		for (int y = 0; y <= TOTAL_ROWS; y++) {
+			g.drawLine(x1 + GRID_X, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)),
+					x1 + GRID_X + ((INNER_CELL_SIZE + 1) * TOTAL_COLUMNS), y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)));
 		}
 		for (int x = 0; x <= TOTAL_COLUMNS; x++) {
-			g.drawLine(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)), y1 + GRID_Y, x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)), y1 + GRID_Y + ((INNER_CELL_SIZE + 1) * (TOTAL_ROWS - 1)));
+			g.drawLine(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)), y1 + GRID_Y,
+					x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)), y1 + GRID_Y + ((INNER_CELL_SIZE + 1) * (TOTAL_ROWS)));
+
 		}
 
-		//Draw an additional cell at the bottom left
-		g.drawRect(x1 + GRID_X, y1 + GRID_Y + ((INNER_CELL_SIZE + 1) * (TOTAL_ROWS - 1)), INNER_CELL_SIZE + 1, INNER_CELL_SIZE + 1);
-
-		//Paint cell colors
+		// Paint cell colors
 		for (int x = 0; x < TOTAL_COLUMNS; x++) {
 			for (int y = 0; y < TOTAL_ROWS; y++) {
-				if ((x == 0) || (y != TOTAL_ROWS - 1)) {
-					Color c = colorArray[x][y];
-					g.setColor(c);
-					g.fillRect(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 1, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1, INNER_CELL_SIZE, INNER_CELL_SIZE);
-				}
+				Color c = colorArray[x][y];
+				g.setColor(c);
+				g.fillRect(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 1, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1,
+						INNER_CELL_SIZE, INNER_CELL_SIZE);
+
 			}
 		}
+		for (int x = 0; x < TOTAL_COLUMNS; x++) {
+			for (int y = 0; y < TOTAL_ROWS; y++) {
+				Color c = letterColor[x][y];
+				g.setColor(c);
+				g.drawString(numbersAround[x][y] + "", x1 + 2 * GRID_X + (x * (INNER_CELL_SIZE + 1)) - GRID_X / 2,
+						y1 + 2 * GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1 - GRID_Y / 2);
+			}
+
+		}
+
 	}
+
 	public int getGridX(int x, int y) {
 		Insets myInsets = getInsets();
 		int x1 = myInsets.left;
 		int y1 = myInsets.top;
 		x = x - x1 - GRID_X;
 		y = y - y1 - GRID_Y;
-		if (x < 0) {   //To the left of the grid
+		if (x < 0) { // To the left of the grid
 			return -1;
 		}
-		if (y < 0) {   //Above the grid
+		if (y < 0) { // Above the grid
 			return -1;
 		}
-		if ((x % (INNER_CELL_SIZE + 1) == 0) || (y % (INNER_CELL_SIZE + 1) == 0)) {   //Coordinate is at an edge; not inside a cell
+		if ((x % (INNER_CELL_SIZE + 1) == 0) || (y % (INNER_CELL_SIZE + 1) == 0)) { // Coordinate
+																					// is
+																					// at
+																					// an
+																					// edge;
+																					// not
+																					// inside
+																					// a
+																					// cell
 			return -1;
 		}
 		x = x / (INNER_CELL_SIZE + 1);
 		y = y / (INNER_CELL_SIZE + 1);
-		if (x == 0 && y == TOTAL_ROWS - 1) {    //The lower left extra cell
-			return x;
-		}
-		if (x < 0 || x > TOTAL_COLUMNS - 1 || y < 0 || y > TOTAL_ROWS - 2) {   //Outside the rest of the grid
-			return -1;
-		}
+
 		return x;
 	}
+
 	public int getGridY(int x, int y) {
 		Insets myInsets = getInsets();
 		int x1 = myInsets.left;
 		int y1 = myInsets.top;
 		x = x - x1 - GRID_X;
 		y = y - y1 - GRID_Y;
-		if (x < 0) {   //To the left of the grid
+		if (x < 0) { // To the left of the grid
 			return -1;
 		}
-		if (y < 0) {   //Above the grid
+		if (y < 0) { // Above the grid
 			return -1;
 		}
-		if ((x % (INNER_CELL_SIZE + 1) == 0) || (y % (INNER_CELL_SIZE + 1) == 0)) {   //Coordinate is at an edge; not inside a cell
+		if ((x % (INNER_CELL_SIZE + 1) == 0) || (y % (INNER_CELL_SIZE + 1) == 0)) { // Coordinate
+																					// is
+																					// at
+																					// an
+																					// edge;
+																					// not
+																					// inside
+																					// a
+																					// cell
 			return -1;
 		}
 		x = x / (INNER_CELL_SIZE + 1);
 		y = y / (INNER_CELL_SIZE + 1);
-		if (x == 0 && y == TOTAL_ROWS - 1) {    //The lower left extra cell
-			return y;
-		}
-		if (x < 0 || x > TOTAL_COLUMNS - 1 || y < 0 || y > TOTAL_ROWS - 2) {   //Outside the rest of the grid
-			return -1;
-		}
 		return y;
 	}
 }

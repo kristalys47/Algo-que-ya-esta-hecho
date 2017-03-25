@@ -8,29 +8,10 @@ import java.util.Random;
 import javax.swing.JFrame;
 
 public class MyMouseAdapter extends MouseAdapter {
-	private Random generator = new Random();
 	private Color check = Color.RED;
-	private int numberOfBombs = generator.nextInt(21);
-	private Minesweeper mines = new Minesweeper();
-	private int[] minesXposition = new int[this.numberOfBombs];
-	private int[] minesYposition = new int[this.numberOfBombs];		
-	this.mines.makeBombs(minesXposition, minesYposition);
 
-	public int getNumberOfBombs() {
-		return numberOfBombs;
-	}
-
- 	public boolean isRed(Color gridcolor) 
-	{
+	public boolean isRed(Color gridcolor) {
 		return (gridcolor.equals(this.check));
-	}
-
-	public boolean haveBomb(int x, int y) {
-		int i;
-		for (i=0; i<this.numberOfBombs;i++){
-		}
-
-		return (false);
 	}
 
 	public void mousePressed(MouseEvent e) {
@@ -87,6 +68,7 @@ public class MyMouseAdapter extends MouseAdapter {
 	}
 
 	public void mouseReleased(MouseEvent e) {
+		MyMouseAdapter p = new MyMouseAdapter();
 		Component c = e.getComponent();
 		while (!(c instanceof JFrame)) {
 			c = c.getParent();
@@ -95,14 +77,7 @@ public class MyMouseAdapter extends MouseAdapter {
 			}
 		}
 		JFrame myFrame = (JFrame) c;
-		MyPanel myPanel = (MyPanel) myFrame.getContentPane().getComponent(0); // Can
-																				// also
-																				// loop
-																				// among
-																				// components
-																				// to
-																				// find
-																				// MyPanel
+		MyPanel myPanel = (MyPanel) myFrame.getContentPane().getComponent(0);
 		Insets myInsets = myFrame.getInsets();
 		int x1 = myInsets.left;
 		int y1 = myInsets.top;
@@ -129,48 +104,41 @@ public class MyMouseAdapter extends MouseAdapter {
 							// where it was pressed
 							// Do nothing
 						} else {
-							// Released the mouse button on the same cell where
-							// it was pressed
-							if ((gridX == 0) || (gridY == 0)) {
-								// On the left column and on the top row... do
-								// nothing
-							} else {
-								// On the grid other than on the left column and
-								// on the top row:
-								Color newColor = null;
-								switch (generator.nextInt(5)) {
-								case 0:
-									newColor = Color.YELLOW;
-									break;
-								case 1:
-									newColor = Color.MAGENTA;
-									break;
-								case 2:
-									newColor = Color.BLACK;
-									break;
-								case 3:
-									newColor = new Color(0x964B00); // Brown
-																	// (from
-																	// http://simple.wikipedia.org/wiki/List_of_colors)
-									break;
-								case 4:
-									newColor = new Color(0xB57EDC); // Lavender
-																	// (from
-																	// http://simple.wikipedia.org/wiki/List_of_colors)
-									break;
-								}
+							if (myPanel.haveBomb(myPanel.mouseDownGridX, myPanel.mouseDownGridY)) {
+								// Released the mouse button on the same cell
+								// where
+								// it was pressed
+								Color newColor = Color.BLACK;
 								myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
 								myPanel.repaint();
+								myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
+								//MOVE REPAINT HERE		
+							} else {
+								Color newColor = Color.GRAY;
+								myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
+								if (myPanel.numbersAround[myPanel.mouseDownGridX][myPanel.mouseDownGridY]==0){
+									myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY]= newColor;
+								}
+								else{
+								Color color2 = Color.BLUE;
+								myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = color2;
+								}
+								myPanel.repaint();	
 							}
+
 						}
 					}
 				}
 				myPanel.repaint();
+				
 			}
 			break;
+
 		case 3:
 
-			if ((myPanel.mouseDownGridX == -1) || (myPanel.mouseDownGridY == -1)) {
+			if ((myPanel.mouseDownGridX == -1) || (myPanel.mouseDownGridY == -1))
+
+			{
 				// Had pressed outside
 				// Do nothing
 			} else {
@@ -185,25 +153,18 @@ public class MyMouseAdapter extends MouseAdapter {
 					} else {
 						// Released the mouse button on the same cell where it
 						// was pressed
-						if ((gridX == 0) || (gridY == 0)) {
-							// On the left column and on the top row... do
-							// nothing
+						// On the grid other than on the left column and on
+						// the top row:
+						Color newColor = null;
+						if (p.isRed(myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY])) {
+							newColor = Color.WHITE;
 						} else {
-							// On the grid other than on the left column and on
-							// the top row:
-							Color newColor= null;
-							MyMouseAdapter p = new MyMouseAdapter();
-							if (p.isRed(myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY]))
-							{
-								newColor = Color.WHITE;
-							}
-							else 
-							{
-								newColor = Color.RED;
-							}
-							myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-							myPanel.repaint();
+							newColor = Color.RED;
 						}
+						myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
+						myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
+						myPanel.repaint();
+					
 					}
 				}
 			}
@@ -216,8 +177,4 @@ public class MyMouseAdapter extends MouseAdapter {
 		}
 	}
 
-	
-
-
-	
 }
