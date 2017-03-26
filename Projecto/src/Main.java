@@ -19,7 +19,6 @@ public class Main {
 
 /* Que falta? 
  * falta que abran todos los espacios grises que no tienes numero si estan pegados
- * falta que si explotan una mine se revelan todas
  * falta verificar el numero de minas que se esta exigiendo 
  * dar una ultima revisada a los requisitos y creo que ya. jejeje
  * ELIMINAR TODOS LOS COMMENTS RAROS
