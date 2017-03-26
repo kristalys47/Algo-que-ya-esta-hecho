@@ -15,7 +15,7 @@ public class Main {
 	}
 
 }
-//04
+
 
 /* Que falta? 
  * falta que abran todos los espacios grises que no tienes numero si estan pegados
