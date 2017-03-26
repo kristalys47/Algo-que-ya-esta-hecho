@@ -23,14 +23,24 @@ public class MyPanel extends JPanel {
 	private int bomb = -1;
 	public int numberOfBombs;
 	public int[][] numbersAround = new int[TOTAL_COLUMNS][TOTAL_ROWS];
-	private Graphics g;
+	
 
-	/**
-	 * 
-	 */
-	/**
-	 * 
-	 */
+	public int getBomb() {
+		return bomb;
+	}
+
+	public void setBomb(int bomb) {
+		this.bomb = bomb;
+	}
+	
+	public int getTotalColumns() {
+		return TOTAL_COLUMNS;
+	}
+
+	public int getTotalRows() {
+		return TOTAL_ROWS;
+	}
+
 	public MyPanel() { // This is the constructor... this code runs first to
 						// initialize
 		if (INNER_CELL_SIZE + (new Random()).nextInt(1) < 1) { // Use of
@@ -208,21 +218,22 @@ public class MyPanel extends JPanel {
 						}
 
 					}
-				} /*
-					 * else{ this.numbersAround[i][j]=this.bomb; }
-					 */
+				}
+				//para poner -1 en las bombas del arreglo de numeros tambien.
+					// else{ this.numbersAround[i][j]=this.bomb; }
+					 
 			}
 		}
 
 	}
 
+	
 	boolean haveBomb(int x, int y) {
 		return (this.bombs[x][y] == this.bomb);
 	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		this.g = g;
 		// Compute interior coordinates
 		Insets myInsets = getInsets();
 		int x1 = myInsets.left;
