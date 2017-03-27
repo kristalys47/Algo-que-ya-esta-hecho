@@ -104,10 +104,11 @@ public class MyMouseAdapter extends MouseAdapter {
 							// where it was pressed
 							// Do nothing
 						} else {
+							// Released the mouse button on the same cell
+							// where
+							// it was pressed
 							if (myPanel.haveBomb(myPanel.mouseDownGridX, myPanel.mouseDownGridY)) {
-								// Released the mouse button on the same cell
-								// where
-								// it was pressed
+								//Si tiene una bomba
 								Color newColor = Color.BLACK;
 								myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
 
@@ -122,6 +123,7 @@ public class MyMouseAdapter extends MouseAdapter {
 										}
 									}
 								}
+								myPanel.youLose=Color.RED;
 								myPanel.repaint();
 								// MOVE REPAINT HERE
 							} else {
@@ -395,22 +397,40 @@ public class MyMouseAdapter extends MouseAdapter {
 					} else {
 						// Released the mouse button on the same cell where it
 						// was pressed
-						// On the grid other than on the left column and on
-						// the top row:
 						Color newColor = null;
 						if (p.isRed(myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY])) {
 							newColor = Color.WHITE;
-						} else {
-							newColor = Color.RED;
-						}
+						} 
+						else {
+						
+						newColor = Color.RED;}
+						
 						myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
 						myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
 						myPanel.repaint();
-
+						}
+					
+					int check=0;
+					for (int j = 0; j <myPanel.getTotalRows(); j++){
+			            for (int i = 0; i < myPanel.getTotalColumns(); i++){
+			            	if (myPanel.winOrLose(i,j)){
+			            		check++;
+			            	}
+			            	
+			            }
+			        }
+					if (check == myPanel.numberOfBombs){
+						//Que hacer si se acaba el juego..
+						myPanel.youWin= new Color(0x136808);
+						myPanel.repaint();
+					
 					}
+					myPanel.repaint();
+					
 				}
 			}
 			myPanel.repaint();
+			
 			break;
 
 		default: // Some other button (2 = Middle mouse button, etc.)

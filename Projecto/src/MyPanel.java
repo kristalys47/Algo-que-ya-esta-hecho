@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.util.Random;
@@ -23,8 +24,15 @@ public class MyPanel extends JPanel {
 	private int bomb = -1;
 	public int numberOfBombs;
 	public int[][] numbersAround = new int[TOTAL_COLUMNS][TOTAL_ROWS];
+	public Color youWin = Color.LIGHT_GRAY;
+	public Color youLose = Color.LIGHT_GRAY;
 	
-
+	public boolean winOrLose(int x, int y){
+		boolean result= colorArray[x][y].equals(Color.RED); 
+		boolean result1=haveBomb(x,y);
+		return ( result && result1);
+	}
+	
 	public int getBomb() {
 		return bomb;
 	}
@@ -280,6 +288,14 @@ public class MyPanel extends JPanel {
 			}
 
 		}
+		
+		g.setColor(this.youLose);
+		g.drawString("YOU LOST THE GAME!",  x1 + 2 * GRID_X + (4 * (INNER_CELL_SIZE + 1)) - GRID_X / 2,
+						y1 + 2 * GRID_Y + (9* (INNER_CELL_SIZE + 1)) + 1 - GRID_Y / 2 );
+		g.setColor(this.youWin);
+		g.drawString("YOU WON THE GAME!",  x1 + 2 * GRID_X + (4 * (INNER_CELL_SIZE + 1)) - GRID_X / 2,
+						y1 + 2 * GRID_Y + (10 * (INNER_CELL_SIZE + 1)) + 1 - GRID_Y / 2 );
+		
 
 	}
 
