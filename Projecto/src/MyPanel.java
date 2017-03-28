@@ -71,7 +71,7 @@ public class MyPanel extends JPanel {
 			chainOpener(x-1,y+1);
 			chainOpener(x+1,y-1);
 			
-		} //l
+		} //l4
 		else if (!canBeColored(x, y) && this.numbersAround[x][y] == 0) {
 			paintCell(x, y);			
 		} 
