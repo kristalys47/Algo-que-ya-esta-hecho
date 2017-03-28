@@ -26,7 +26,7 @@ public class MyPanel extends JPanel {
 	public int[][] numbersAround = new int[TOTAL_COLUMNS][TOTAL_ROWS];
 	public Color youWin = Color.LIGHT_GRAY;
 	public Color youLose = Color.LIGHT_GRAY;
-	//no se jajajaja
+	
 	private boolean canBeColored(int x, int y) {
 		for (int i = -1; i < 2; i++) {
 			if ((x + i) <= -1 || (x + i) >= TOTAL_COLUMNS) {
@@ -71,7 +71,7 @@ public class MyPanel extends JPanel {
 			chainOpener(x-1,y+1);
 			chainOpener(x+1,y-1);
 			
-		} 
+		} //l4k
 		else if (!canBeColored(x, y) && this.numbersAround[x][y] == 0) {
 			paintCell(x, y);			
 		} 
