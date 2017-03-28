@@ -108,10 +108,9 @@ public class MyMouseAdapter extends MouseAdapter {
 							// where
 							// it was pressed
 							if (myPanel.haveBomb(myPanel.mouseDownGridX, myPanel.mouseDownGridY)) {
-								//Si tiene una bomba
+								// Si tiene una bomba
 								Color newColor = Color.BLACK;
 								myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-
 								myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
 								for (int j = 0; j < myPanel.getTotalRows(); j++) {
 									for (int i = 0; i < myPanel.getTotalColumns(); i++) {
@@ -123,266 +122,58 @@ public class MyMouseAdapter extends MouseAdapter {
 										}
 									}
 								}
-								myPanel.youLose=Color.RED;
+								myPanel.youLose = Color.RED;
 								myPanel.repaint();
-								// MOVE REPAINT HERE
+							
 							} else {
-								Color newColor = Color.GRAY;
-								myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-								if (myPanel.numbersAround[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == 0) {
-									myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-								} else {
-									Color color2 = Color.BLUE;
-									myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = color2;
-								}
-								myPanel.repaint();
-								for (int i = (myPanel.mouseDownGridY - 1); i < (myPanel.mouseDownGridY + 2); i++){
-						            for (int j = (myPanel.mouseDownGridX - 1); j < (myPanel.mouseDownGridX + 2); j++){
-						                try {
-						                    if (myPanel.colorArray[j][i]==Color.GRAY){
-						                    	continue;
-						                    }
-						                    else if (j == myPanel.mouseDownGridY && i == myPanel.mouseDownGridX){
-						                        continue;   
-						                    }
-						                    else if (myPanel.haveBomb(j,i)){
-						                    	continue;
-						                    }
-						                    else{
-						                    newColor = Color.GRAY;
-						                    myPanel.colorArray[j][i] = newColor;
-						                    if (myPanel.numbersAround[j][i] == 0) {
-												myPanel.letterColor[j][i] = newColor;
-											} else {
-												Color color2 = Color.BLUE;
-												myPanel.letterColor[j][i] = color2;
-											}
-						                    }
-						                    
+								myPanel.chainOpener(myPanel.mouseDownGridX, myPanel.mouseDownGridY);
+								
+								/*
+								myPanel.paintCell(myPanel.mouseDownGridX, myPanel.mouseDownGridY);
+							
 
-						                } catch (IndexOutOfBoundsException ex){
-						                    continue;
-						                }
-
-
-
-						            }
-						        }   
-
-								/*int j = myPanel.mouseDownGridY;
-								int i = myPanel.mouseDownGridX;
-								int a;
-								int b;
-								do {
-									if (j == 0) {// Excepciones del primer row
-										switch (i) {
-										case 0: {// izquierda arriba
-											for (b = j; b < j + 2; b++) {
-												for (a = 0; a < i + 2; a++) {
-													if (!(myPanel.numbersAround[a][b] > myPanel.getBomb())) {
-														newColor = Color.GRAY;
-														myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-														if (myPanel.numbersAround[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == 0) {
-															myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-														} else {
-															Color color2 = Color.BLUE;
-															myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = color2;
-														}
-														myPanel.repaint();
-													}
-
-												}
-											}
+							
+							int i, j;
+							for (i =myPanel.mouseDownGridY; i < myPanel.getTotalRows(); i++) {
+								for (j = myPanel.mouseDownGridX; j < myPanel.getTotalColumns(); j++) {
+									try {
+										if (myPanel.colorArray[j][i].equals(Color.GRAY)) {
+											continue;
+										} 
+										else if (i == myPanel.mouseDownGridY && j == myPanel.mouseDownGridX) {
+											continue;
+										} else if (myPanel.haveBomb(j, i)) {
 											break;
+										} else {
+											myPanel.paintCell(j, i);
 										}
-										case myPanel.getTotalColumns() - 1: {// derecha
-																				// arriba
-											for (b = j; b < j + 2; b++) {
-												for (a = myPanel.getTotalColumns() - 2; a < myPanel.getTotalColumns()
-														- 1; a++) {
-													if (!(myPanel.numbersAround[a][b] > myPanel.getBomb())) {
-														newColor = Color.GRAY;
-														myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-														if (myPanel.numbersAround[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == 0) {
-															myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-														} else {
-															Color color2 = Color.BLUE;
-															myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = color2;
-														}
-														myPanel.repaint();
-													}
+									} catch (IndexOutOfBoundsException ex) {
+										continue;
 
-												}
-											}
-											break;
-										}
-										default: {// derecha a izquierda arriba
-											{
-												for (b = j; b < (j + 2); b++) {
-													for (a = i - 1; a < (i + 2); a++) {
-														if (!(myPanel.numbersAround[a][b] > myPanel.getBomb())) {
-															newColor = Color.GRAY;
-															myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-															if (myPanel.numbersAround[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == 0) {
-																myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-															} else {
-																Color color2 = Color.BLUE;
-																myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = color2;
-															}
-															myPanel.repaint();
-														}
-
-													}
-												}
-
-												break;
-											}
-										}
-										}
-									} else if (j == myPanel.getTotalRows() - 1) {// Excepciones
-																					// del
-																					// ultimo
-																					// row
-										switch (i) {
-										case 0: {// izquierda abajo
-											for (b = j - 1; b < j + 1; b++) {
-												for (a = 0; a < i + 2; a++) {
-													if (!(myPanel.numbersAround[a][b] > myPanel.getBomb())) {
-														newColor = Color.GRAY;
-														myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-														if (myPanel.numbersAround[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == 0) {
-															myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-														} else {
-															Color color2 = Color.BLUE;
-															myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = color2;
-														}
-														myPanel.repaint();
-													}
-												}
-												break;
-											}
-										}
-										case myPanel.getTotalColumns() - 1: {// derecha
-																				// abajo
-											for (b = j - 1; b < j + 1; b++) {
-												for (a = myPanel.getTotalColumns() - 2; a < myPanel
-														.getTotalColumns(); a++) {
-													if (!(myPanel.numbersAround[a][b] > myPanel.getBomb())) {
-														newColor = Color.GRAY;
-														myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-														if (myPanel.numbersAround[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == 0) {
-															myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-														} else {
-															Color color2 = Color.BLUE;
-															myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = color2;
-														}
-														myPanel.repaint();
-													}
-												}
-												break;
-											}
-										}
-										default: {// derecha a izquierda abajo
-											{
-												for (b = j - 1; b < (j + 1); b++) {
-													for (a = i - 1; a < (i + 2); a++) {
-														if (!(myPanel.numbersAround[a][b] > myPanel.getBomb())) {
-															newColor = Color.GRAY;
-															myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-															if (myPanel.numbersAround[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == 0) {
-																myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-															} else {
-																Color color2 = Color.BLUE;
-																myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = color2;
-															}
-															myPanel.repaint();
-														}
-													}
-												}
-
-												break;
-											}
-										}
-
-										}
-									} else if (i == 0 && j != 0 && j != myPanel.getTotalRows() - 1) {// arriba
-										// hacia
-										// abajo
-										// izquierda
-										for (b = j - 1; b < j + 2; b++) {
-											for (a = i; a < i + 2; a++) {
-												if (!(myPanel.numbersAround[a][b] > myPanel.getBomb())) {
-													newColor = Color.GRAY;
-													myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-													if (myPanel.numbersAround[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == 0) {
-														myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-													} else {
-														Color color2 = Color.BLUE;
-														myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = color2;
-													}
-													myPanel.repaint();
-												}
-											}
-
-										}
-									} else if (i == myPanel.getTotalColumns() - 1 && j != 0
-											&& j != myPanel.getTotalRows() - 1) {// arriba
-										// hacia
-										// abajo
-										// derecha
-										for (b = j - 1; b < j + 2; b++) {
-											for (a = i - 1; a < i + 1; a++) {
-												if (!(myPanel.numbersAround[a][b] > myPanel.getBomb())) {
-													newColor = Color.GRAY;
-													myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-													if (myPanel.numbersAround[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == 0) {
-														myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-													} else {
-														Color color2 = Color.BLUE;
-														myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = color2;
-													}
-													myPanel.repaint();
-												}
-											}
-										}
-									} else if (i > 0 && j > 0 && i < myPanel.getTotalColumns() - 1
-											&& j < myPanel.getTotalRows() - 1) {
-
-										for (b = j - 1; b < (j + 2); b++) {
-											for (a = i - 1; a < (i + 2); a++) {
-												if (!(myPanel.numbersAround[a][b] > myPanel.getBomb())) {
-													newColor = Color.GRAY;
-													myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-													if (myPanel.numbersAround[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == 0) {
-														myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-													} else {
-														Color color2 = Color.BLUE;
-														myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = color2;
-													}
-													myPanel.repaint();
-												}
-											}
-
-										}
 									}
-								} while (myPanel.numbersAround[i][j] != 0);*/
-							}
 
+								}
+								if (myPanel.haveBomb(myPanel.mouseDownGridX, i+1))
+										break;
+								
+							}
+							
+							
+							*/}
+
+							
 						}
 
 					}
+
 				}
-
-				myPanel.repaint();
-
 			}
+
+			myPanel.repaint();
 			break;
 
-		case 3:
-
-			if ((myPanel.mouseDownGridX == -1) || (myPanel.mouseDownGridY == -1))
-
-			{
+		case 3: {
+			if ((myPanel.mouseDownGridX == -1) || (myPanel.mouseDownGridY == -1)) {
 				// Had pressed outside
 				// Do nothing
 			} else {
@@ -400,39 +191,38 @@ public class MyMouseAdapter extends MouseAdapter {
 						Color newColor = null;
 						if (p.isRed(myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY])) {
 							newColor = Color.WHITE;
-						} 
-						else {
-						
-						newColor = Color.RED;}
-						
+						} else {
+
+							newColor = Color.RED;
+						}
+
 						myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
 						myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
 						myPanel.repaint();
-						}
-					
-					int check=0;
-					for (int j = 0; j <myPanel.getTotalRows(); j++){
-			            for (int i = 0; i < myPanel.getTotalColumns(); i++){
-			            	if (myPanel.winOrLose(i,j)){
-			            		check++;
-			            	}
-			            	
-			            }
-			        }
-					if (check == myPanel.numberOfBombs){
-						//Que hacer si se acaba el juego..
-						myPanel.youWin= new Color(0x136808);
-						myPanel.repaint();
-					
 					}
-					myPanel.repaint();
-					
+
+					int check = 0;
+					for (int j = 0; j < myPanel.getTotalRows(); j++) {
+						for (int i = 0; i < myPanel.getTotalColumns(); i++) {
+							if (myPanel.winOrLose(i, j)) {
+								check++;
+							}
+
+						}
+					}
+					if (check == myPanel.numberOfBombs) {
+						// Que hacer si se acaba el juego..
+						myPanel.youWin = new Color(0x136808);
+						myPanel.repaint();
+
+					}
+
 				}
 			}
 			myPanel.repaint();
-			
-			break;
 
+			break;
+		}
 		default: // Some other button (2 = Middle mouse button, etc.)
 			// Do nothing
 			break;

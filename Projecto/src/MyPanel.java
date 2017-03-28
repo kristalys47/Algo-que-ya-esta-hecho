@@ -27,6 +27,46 @@ public class MyPanel extends JPanel {
 	public Color youWin = Color.LIGHT_GRAY;
 	public Color youLose = Color.LIGHT_GRAY;
 	
+	private boolean canBeColored(int x, int y) {
+		for (int i = -1; i < 2; i++) {
+			if ((x + i) < -1 || (x + i) > TOTAL_COLUMNS) {
+				return false;
+			}
+			for (int j = -1; j < 2; j++) {
+				if ((y + j) < -1 || (y + j) > TOTAL_ROWS) {
+					return false;
+				}
+			}
+		}
+		return (!haveBomb(x, y) && colorArray[x][y].equals(Color.WHITE));
+	}
+
+	public void chainOpener(int x, int y) {
+		if (canBeColored(x, y) && this.numbersAround[x][y] == 0) {
+			paintCell(x, y);
+			chainOpener(x + 1, y);
+			chainOpener(x - 1, y);
+			chainOpener(x, y - 1);
+			chainOpener(x, y + 1);
+		} else if (this.numbersAround[x][y] > 0) {
+			paintCell(x, y);
+		} else
+			return;
+	}
+
+	public void paintCell(int x, int y){
+		Color newColor = Color.GRAY;
+		colorArray[x][y] = newColor;
+		if (numbersAround[x][y] == 0) {
+			letterColor[x][y] = newColor;
+		} 
+		else {
+			Color color2 = Color.BLUE;
+			letterColor[x][y] = color2;
+		}
+		repaint();
+		
+	}
 	public boolean winOrLose(int x, int y){
 		boolean result= colorArray[x][y].equals(Color.RED); 
 		boolean result1=haveBomb(x,y);
@@ -37,10 +77,6 @@ public class MyPanel extends JPanel {
 		return bomb;
 	}
 
-	public void setBomb(int bomb) {
-		this.bomb = bomb;
-	}
-	
 	public int getTotalColumns() {
 		return TOTAL_COLUMNS;
 	}
@@ -85,7 +121,7 @@ public class MyPanel extends JPanel {
 		}
 		// Crear panel de juego
 		// crear las bombas
-		this.numberOfBombs = this.generator.nextInt(21);
+		this.numberOfBombs = this.generator.nextInt(60);
 		//PRUEBAS DE BOMBAS
 		/*bombs[1][1] = this.bomb;
 		bombs[1][7] = this.bomb;
