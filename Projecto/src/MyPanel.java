@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.util.Random;
@@ -23,16 +24,59 @@ public class MyPanel extends JPanel {
 	private int bomb = -1;
 	public int numberOfBombs;
 	public int[][] numbersAround = new int[TOTAL_COLUMNS][TOTAL_ROWS];
+	public Color youWin = Color.LIGHT_GRAY;
+	public Color youLose = Color.LIGHT_GRAY;
 	
+	private boolean canBeColored(int x, int y) {
+		for (int i = -1; i < 2; i++) {
+			if ((x + i) < -1 || (x + i) > TOTAL_COLUMNS) {
+				return false;
+			}
+			for (int j = -1; j < 2; j++) {
+				if ((y + j) < -1 || (y + j) > TOTAL_ROWS) {
+					return false;
+				}
+			}
+		}
+		return (!haveBomb(x, y) && colorArray[x][y].equals(Color.WHITE));
+	}
 
+	public void chainOpener(int x, int y) {
+		if (canBeColored(x, y) && this.numbersAround[x][y] == 0) {
+			paintCell(x, y);
+			chainOpener(x + 1, y);
+			chainOpener(x - 1, y);
+			chainOpener(x, y - 1);
+			chainOpener(x, y + 1);
+		} else if (this.numbersAround[x][y] > 0) {
+			paintCell(x, y);
+		} else
+			return;
+	}
+
+	public void paintCell(int x, int y){
+		Color newColor = Color.GRAY;
+		colorArray[x][y] = newColor;
+		if (numbersAround[x][y] == 0) {
+			letterColor[x][y] = newColor;
+		} 
+		else {
+			Color color2 = Color.BLUE;
+			letterColor[x][y] = color2;
+		}
+		repaint();
+		
+	}
+	public boolean winOrLose(int x, int y){
+		boolean result= colorArray[x][y].equals(Color.RED); 
+		boolean result1=haveBomb(x,y);
+		return ( result && result1);
+	}
+	
 	public int getBomb() {
 		return bomb;
 	}
 
-	public void setBomb(int bomb) {
-		this.bomb = bomb;
-	}
-	
 	public int getTotalColumns() {
 		return TOTAL_COLUMNS;
 	}
@@ -77,7 +121,7 @@ public class MyPanel extends JPanel {
 		}
 		// Crear panel de juego
 		// crear las bombas
-		this.numberOfBombs = this.generator.nextInt(21);
+		this.numberOfBombs = this.generator.nextInt(60);
 		//PRUEBAS DE BOMBAS
 		/*bombs[1][1] = this.bomb;
 		bombs[1][7] = this.bomb;
@@ -280,6 +324,14 @@ public class MyPanel extends JPanel {
 			}
 
 		}
+		
+		g.setColor(this.youLose);
+		g.drawString("YOU LOST THE GAME!",  x1 + 2 * GRID_X + (4 * (INNER_CELL_SIZE + 1)) - GRID_X / 2,
+						y1 + 2 * GRID_Y + (9* (INNER_CELL_SIZE + 1)) + 1 - GRID_Y / 2 );
+		g.setColor(this.youWin);
+		g.drawString("YOU WON THE GAME!",  x1 + 2 * GRID_X + (4 * (INNER_CELL_SIZE + 1)) - GRID_X / 2,
+						y1 + 2 * GRID_Y + (10 * (INNER_CELL_SIZE + 1)) + 1 - GRID_Y / 2 );
+		
 
 	}
 
