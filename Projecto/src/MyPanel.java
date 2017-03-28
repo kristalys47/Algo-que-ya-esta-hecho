@@ -29,18 +29,36 @@ public class MyPanel extends JPanel {
 	
 	private boolean canBeColored(int x, int y) {
 		for (int i = -1; i < 2; i++) {
-			if ((x + i) < -1 || (x + i) > TOTAL_COLUMNS) {
+			if ((x + i) <= -1 || (x + i) >= TOTAL_COLUMNS) {
 				return false;
 			}
 			for (int j = -1; j < 2; j++) {
-				if ((y + j) < -1 || (y + j) > TOTAL_ROWS) {
+				if ((y + j) <= -1 || (y + j) >=TOTAL_ROWS) {
 					return false;
 				}
 			}
 		}
-		return (!haveBomb(x, y) && colorArray[x][y].equals(Color.WHITE));
+		return (colorArray[x][y].equals(Color.WHITE));
 	}
 
+	private boolean checkForZero(int x, int y) {
+		for (int i = y - 1; i < y + 2; i++) {
+			for (int j = x - 1; j < x + 2; j++) {
+				try {
+					if (this.numbersAround[i][j] == 0) {
+						return true;
+
+					} else if (i == x && j == y) {
+						continue;
+					}
+				} catch (IndexOutOfBoundsException ex) {
+					continue;
+
+				}
+			}
+		}
+		return false;
+	}
 	public void chainOpener(int x, int y) {
 		if (canBeColored(x, y) && this.numbersAround[x][y] == 0) {
 			paintCell(x, y);
@@ -48,10 +66,25 @@ public class MyPanel extends JPanel {
 			chainOpener(x - 1, y);
 			chainOpener(x, y - 1);
 			chainOpener(x, y + 1);
-		} else if (this.numbersAround[x][y] > 0) {
+			chainOpener(x-1,y-1);
+			chainOpener(x+1,y+1);
+			chainOpener(x-1,y+1);
+			chainOpener(x+1,y-1);
+			
+		} 
+		else if (!canBeColored(x, y) && this.numbersAround[x][y] == 0) {
+			paintCell(x, y);			
+		} 
+		else if (this.numbersAround[x][y] > 0){
 			paintCell(x, y);
-		} else
+		} 
+		/*else if (this.numbersAround[x][y]>0  && checkForZero(x,y)){
+			paintCell(x, y);
+			
+		}*/
+		else{
 			return;
+		}
 	}
 
 	public void paintCell(int x, int y){
@@ -121,15 +154,8 @@ public class MyPanel extends JPanel {
 		}
 		// Crear panel de juego
 		// crear las bombas
-		this.numberOfBombs = this.generator.nextInt(60);
-		//PRUEBAS DE BOMBAS
-		/*bombs[1][1] = this.bomb;
-		bombs[1][7] = this.bomb;
-		bombs[7][1] = this.bomb;
-		bombs[7][7] = this.bomb;
-		bombs[5][5] = this.bomb;
-		bombs[4][4] = this.bomb;
-*/
+		this.numberOfBombs = this.generator.nextInt(10);
+		
 		// espacios com bombas tienen -1
 
 		for (int a = 0; a < numberOfBombs; a++) {
