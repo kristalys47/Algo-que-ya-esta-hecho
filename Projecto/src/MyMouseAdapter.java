@@ -8,10 +8,10 @@ import java.util.Random;
 import javax.swing.JFrame;
 
 public class MyMouseAdapter extends MouseAdapter {
-	private Color check = Color.RED;
-
+	
 	public boolean isRed(Color gridcolor) {
-		return (gridcolor.equals(this.check));
+		//This method checks if the grid is red
+		return (gridcolor.equals(Color.red));
 	}
 
 	public void mousePressed(MouseEvent e) {
@@ -90,7 +90,7 @@ public class MyMouseAdapter extends MouseAdapter {
 		int gridY = myPanel.getGridY(x, y);
 		switch (e.getButton()) {
 		case 1: // Left mouse button
-			if (!(myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == check)) {
+			if (!(isRed(myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY]))) {
 				if ((myPanel.mouseDownGridX == -1) || (myPanel.mouseDownGridY == -1)) {
 					// Had pressed outside
 					// Do nothing
@@ -108,7 +108,6 @@ public class MyMouseAdapter extends MouseAdapter {
 							// where
 							// it was pressed
 							if (myPanel.haveBomb(myPanel.mouseDownGridX, myPanel.mouseDownGridY)) {
-								// Si tiene una bomba
 								Color newColor = Color.BLACK;
 								myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
 								myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
@@ -124,51 +123,13 @@ public class MyMouseAdapter extends MouseAdapter {
 								}
 								myPanel.youLose = Color.RED;
 								myPanel.repaint();
-							
 							} else {
 								myPanel.chainOpener(myPanel.mouseDownGridX, myPanel.mouseDownGridY);
-								
-								/*
-								myPanel.paintCell(myPanel.mouseDownGridX, myPanel.mouseDownGridY);
-							
-
-							
-							int i, j;
-							for (i =myPanel.mouseDownGridY; i < myPanel.getTotalRows(); i++) {
-								for (j = myPanel.mouseDownGridX; j < myPanel.getTotalColumns(); j++) {
-									try {
-										if (myPanel.colorArray[j][i].equals(Color.GRAY)) {
-											continue;
-										} 
-										else if (i == myPanel.mouseDownGridY && j == myPanel.mouseDownGridX) {
-											continue;
-										} else if (myPanel.haveBomb(j, i)) {
-											break;
-										} else {
-											myPanel.paintCell(j, i);
-										}
-									} catch (IndexOutOfBoundsException ex) {
-										continue;
-
-									}
-
 								}
-								if (myPanel.haveBomb(myPanel.mouseDownGridX, i+1))
-										break;
-								
-							}
-							
-							
-							*/}
-
-							
 						}
-
 					}
-
 				}
 			}
-
 			myPanel.repaint();
 			break;
 
@@ -195,32 +156,26 @@ public class MyMouseAdapter extends MouseAdapter {
 
 							newColor = Color.RED;
 						}
-
 						myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
 						myPanel.letterColor[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
 						myPanel.repaint();
 					}
-
 					int check = 0;
 					for (int j = 0; j < myPanel.getTotalRows(); j++) {
 						for (int i = 0; i < myPanel.getTotalColumns(); i++) {
 							if (myPanel.winOrLose(i, j)) {
 								check++;
 							}
-
 						}
 					}
 					if (check == myPanel.numberOfBombs) {
 						// Que hacer si se acaba el juego..
 						myPanel.youWin = new Color(0x136808);
 						myPanel.repaint();
-
 					}
-
 				}
 			}
 			myPanel.repaint();
-
 			break;
 		}
 		default: // Some other button (2 = Middle mouse button, etc.)
